@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Configurable prediction threshold (use env var PRED_THRESHOLD, default 0.30)
-PRED_THRESHOLD = float(os.getenv("PRED_THRESHOLD", "0.30"))
+PRED_THRESHOLD = float(os.getenv("PRED_THRESHOLD", "0.25"))
 
 # Load model (ensure file exists at model/xgboost_model.joblib)
 MODEL_PATH = "model/xgboost_model.joblib"
@@ -138,6 +138,21 @@ def predict():
         logging.error("Error in /predict: %s", e)
         logging.error(traceback.format_exc())
         return jsonify({"error": "Internal server error", "detail": str(e)}), 500
+
+@app.route("/history", methods=["GET"])
+def history():
+    try:
+        n = int(request.args.get('n', 20))
+        conn = get_db_connection()
+        cur = conn.cursor(dictionary=True)
+        cur.execute("SELECT * FROM predictions ORDER BY created_at DESC LIMIT %s", (n,))
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        return jsonify({"history": rows})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
