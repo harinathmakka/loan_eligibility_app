@@ -1,23 +1,24 @@
-📘 Loan Eligibility Prediction Web Application
+# 📘 Loan Eligibility Prediction Web Application
 
-A full-stack machine learning project that predicts whether a customer will be approved or rejected for a loan based on financial & demographic inputs.
-Built using Flask (backend), XGBoost ML model, MySQL, and a simple HTML/JS frontend.
+A full-stack machine learning application that predicts whether a customer is **Approved** or **Rejected** for a loan based on financial & demographic inputs.
+Built using **Flask (API)**, **XGBoost ML model**, **MySQL DB**, and **HTML/JS frontend**.
 
-⭐ Project Highlights
+---
 
-End-to-end machine learning model trained on 255K+ customer loan records.
+# ⭐ Project Highlights
 
-XGBoost classifier used as final model (best F1-score among Logistic Regression, Random Forest, XGBoost).
+* End-to-end ML pipeline trained on **255K+ loan records**
+* **XGBoost** selected as final model (best F1-score)
+* Clean REST API backend (Flask)
+* MySQL database integration for prediction history
+* Simple, responsive frontend UI
+* Modular, production-ready project structure
 
-Clean REST API backend (Flask) supporting prediction + database logging.
+---
 
-MySQL database integration to store prediction history.
+# 📂 Project Structure
 
-Frontend UI for user inputs and instant results.
-
-Fully deployed locally; structured and production-ready code.
-
-📂 Project Structure
+```
 loan_eligibility_app/
 │
 ├── backend/
@@ -26,156 +27,155 @@ loan_eligibility_app/
 │   ├── model/
 │   │   └── xgboost_model.joblib
 │   ├── utils/
-│   │   └── preprocess.py      # Input preprocessing (one-hot + numerical)
+│   │   └── preprocess.py      # Input preprocessing
 │   ├── database/
-│   │   └── db.py              # MySQL connection & helper
+│   │   └── db.py              # MySQL connection
 │   └── venv/                  # Virtual environment (ignored in git)
 │
 ├── frontend/
-│   ├── index.html             # Minimal, clean UI for loan inputs
+│   ├── index.html             # UI for loan inputs
 │
 └── README.md
+```
 
-🧠 Machine Learning Summary
-✔ Dataset
+---
 
-File: Loan_default.csv
+# 🧠 Machine Learning Summary
 
-Size: 255,347 records
+### ✔ Dataset
 
-Target: Default (0 = No Default, 1 = Default)
+* File: **Loan_default.csv**
+* Size: **255,347 records**
+* Target: **Default** (0 = No, 1 = Yes)
+* Categorical → One-Hot Encoding
+* Numerical → Scaling
+* Removed irrelevant fields (LoanID etc.)
 
-Categorical variables encoded using One-Hot Encoding
+---
 
-Numerical variables scaled where appropriate
+# 🧪 Models Trained
 
-Irrelevant fields like LoanID removed
+| Model               | Accuracy | Precision | Recall | F1-Score |
+| ------------------- | -------- | --------- | ------ | -------- |
+| Logistic Regression | 0.885    | 0.60      | 0.02   | 0.05     |
+| Random Forest       | 0.887    | 0.63      | 0.04   | 0.08     |
+| **XGBoost (Final)** | 0.886    | 0.55      | 0.08   | 0.14     |
 
-🧪 Models Trained
-Model	Accuracy	Precision	Recall	F1-Score
-Logistic Regression	0.885	0.60	0.02	0.05
-Random Forest	0.887	0.63	0.04	0.08
-XGBoost (Final)	0.886	0.55	0.08	0.14
-🎯 Final Model:
+### 🎯 Final Model Used
 
-👉 XGBoost Classifier (best F1-score on imbalanced dataset)
+**XGBoost Classifier** (best performer on imbalanced dataset)
 
-🧰 Tech Stack
-Backend
+---
 
-Python 3.10
+# 🧰 Tech Stack
 
-Flask
+### Backend
 
-Flask-CORS
+* Python 3.10
+* Flask + Flask-CORS
+* XGBoost
+* Scikit-Learn
+* Pandas, NumPy
+* MySQL Connector
 
-XGBoost
+### Frontend
 
-Scikit-Learn
+* HTML
+* CSS
+* JavaScript (Fetch API)
 
-Pandas & NumPy
+### Database
 
-MySQL Connector
+* MySQL (local)
 
-Frontend
+---
 
-HTML
+# 🚀 How to Run the Application (Local Setup)
 
-CSS
+## 1️⃣ Start MySQL Server
 
-Vanilla JavaScript (fetch API)
-
-Database
-
-MySQL (local)
-
-🚀 How to Run the Application (Local Setup)
-1️⃣ Start MySQL Server
+```sh
 sudo service mysql start
+```
 
+### Create Database
 
-Create database:
-
+```sql
 CREATE DATABASE loan_app;
 USE loan_app;
+```
 
+### Create Predictions Table
 
-Create predictions table:
-
+```sql
 CREATE TABLE predictions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    age INT,
-    income FLOAT,
-    loan_amount FLOAT,
-    credit_score INT,
-    months_employed INT,
-    num_credit_lines INT,
-    interest_rate FLOAT,
-    loan_term INT,
-    dti_ratio FLOAT,
-    education VARCHAR(50),
-    employment_type VARCHAR(50),
-    marital_status VARCHAR(50),
-    has_mortgage VARCHAR(10),
-    has_dependents VARCHAR(10),
-    loan_purpose VARCHAR(50),
-    has_cosigner VARCHAR(10),
-    prediction VARCHAR(20),
-    probability FLOAT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  age INT,
+  income FLOAT,
+  loan_amount FLOAT,
+  credit_score INT,
+  months_employed INT,
+  num_credit_lines INT,
+  interest_rate FLOAT,
+  loan_term INT,
+  dti_ratio FLOAT,
+  education VARCHAR(50),
+  employment_type VARCHAR(50),
+  marital_status VARCHAR(50),
+  has_mortgage VARCHAR(10),
+  has_dependents VARCHAR(10),
+  loan_purpose VARCHAR(50),
+  has_cosigner VARCHAR(10),
+  prediction VARCHAR(20),
+  probability FLOAT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
+### Create MySQL User
 
-Create MySQL user:
-
+```sql
 DROP USER IF EXISTS 'loan_user'@'localhost';
 CREATE USER 'loan_user'@'localhost' IDENTIFIED BY 'prasad123';
 GRANT ALL PRIVILEGES ON loan_app.* TO 'loan_user'@'localhost';
 FLUSH PRIVILEGES;
+```
 
-2️⃣ Setup Backend
+---
 
-Navigate to backend folder:
+## 2️⃣ Setup Backend
 
+```sh
 cd loan_eligibility_app/backend
-
-
-Create virtual environment:
-
 python3 -m venv venv
 source venv/bin/activate
-
-
-Install dependencies:
-
 pip install -r requirements.txt
-
-
-Run the API:
-
 python app.py
+```
 
+Backend runs at:
 
-Backend will start on:
+👉 [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-http://127.0.0.1:5000
+---
 
-3️⃣ Run Frontend
+## 3️⃣ Run Frontend
 
-Open:
+Simply open:
 
+```
 loan_eligibility_app/frontend/index.html
+```
 
+---
 
-in any browser.
+# 🖥️ API Documentation
 
-You will see the Loan Eligibility Form.
+### **POST /predict**
 
-🖥️ API Documentation
-POST /predict
+#### Request Body
 
-Request Body (JSON)
-
+```json
 {
   "age": 25,
   "income": 500000,
@@ -194,73 +194,53 @@ Request Body (JSON)
   "loan_purpose": "Business",
   "has_cosigner": "No"
 }
+```
 
+#### Example Response
 
-Response
-
+```json
 {
   "prediction": "Approved",
   "probability": 0.19
 }
+```
 
+*All predictions are stored in MySQL.*
 
-All predictions are stored in MySQL.
+---
 
-🎨 UI Preview
+# 📌 Key Features
 
-✔ Clean, modern form
-✔ Hints for each field
-✔ Probability + Approval/Rejection badge
-✔ Works instantly with backend API
-
-📌 Key Features
-✔ Fully functional ML pipeline
-
-From preprocessing → training → evaluation → saving model → serving via API.
-
-✔ Real-time prediction
-
-Frontend collects user input → sends to Flask → returns result instantly.
-
-✔ Database logging
-
-Every prediction saved in MySQL.
-
+✔ End-to-end ML pipeline
+✔ Real-time predictions
+✔ MySQL logging
 ✔ Modular backend
-
-preprocess.py = feature processing
-
-db.py = MySQL connection
-
-app.py = API router
-
 ✔ Clean and readable code
-📈 Future Improvements
 
-(To upgrade for resume + job applications)
+---
 
-Add SHAP explainability
+# 📈 Future Improvements
 
-Add charts in frontend (Feature importance, history trends)
+* Add SHAP explainability
+* Add charts to frontend
+* Add prediction history UI
+* Secure admin login (JWT)
+* Deploy backend + frontend
+* Convert UI to React
+* Improve class imbalance handling
 
-Add prediction history page
+---
 
-Add (JWT) login for admin
+# 🏁 Conclusion
 
-Deploy backend + frontend online
+This project demonstrates:
 
-Convert UI to React.js version
+* **Data Analysis & ML expertise** (EDA → Model → Evaluation)
+* **Backend knowledge** (Flask REST API)
+* **Data engineerin** (MySQL storage + pipelines)
+* **Frontend development** (HTML/JS)
+* **Full-stack ML deployment**
 
-Add SMOTE / class-weight improvements
+Useful for **Data Analyst, ML Engineer, Data Scientist, BFSI Analytics**, and **Full-Stack** roles.
 
-🏁 Conclusion
-
-This project demonstrates strong capability in:
-
-✔ Machine Learning (EDA → Model → Evaluation)
-✔ Backend Development (Flask REST API)
-✔ Data Engineering (MySQL integration)
-✔ Frontend Development (HTML/JS)
-✔ Full-Stack ML Deployment
-
-Perfect for Data Analyst, ML Engineer, Data Scientist, BFSI roles, and full-stack developer positions.
+---
